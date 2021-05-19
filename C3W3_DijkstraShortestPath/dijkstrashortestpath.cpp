@@ -19,7 +19,7 @@ public:
     Graph(int n, double density);
     int V();
     int E();
-    bool adjacent(int u, int v);
+    int adjacent(int u, int v);
     vector<int> neighbors(int u);
     void add(int u, int v, double dist);
     void remove(int u, int v);
@@ -51,7 +51,6 @@ Graph::Graph(int n, double density){
                 }           
         }
     }
-    cout << count << "\n";
 };
 
 int Graph::V(){
@@ -76,29 +75,24 @@ void Graph::remove(int u, int v){
     int nodes[2] = {u, v};
     int flag = 1;
 
-    for (int i = 0; i < 2; i++){
-        int j = !i;
-        if (flag == 0) break;
-        for (auto it=adj[nodes[i]].begin(); it!=adj[nodes[i]].end(); it++){
-            w = it->first;
-            if (w == nodes[j]) {
-                adj[nodes[i]].erase(it);
-                flag = 0;
-                break;
-            }   
-        }
-    }
+    auto it = find_if( adj[u].begin(), adj[u].end(), 
+        [&v](const pair<int, double>& element){ return (element.first == v);} );
 
+    if (it != adj[u].end()) {
+        adj[u].erase(it);
+        auto it = find_if( adj[v].begin(), adj[v].end(), 
+            [&u](const pair<int, double>& element){ return (element.first == u);} );
+        adj[v].erase(it);
+    }
 }
 
-bool Graph::adjacent(int u, int v){
-    int w;
-    
-    for (auto it=adj[u].begin(); it!=adj[u].end(); it++){
-        w = it->first;
-        if (w == v) return 1;
-    }
-    return 0;
+int Graph::adjacent(int u, int v){
+
+    auto it = find_if( adj[u].begin(), adj[u].end(), 
+        [&v](const pair<int, double>& element){ return (element.first == v);} );
+    bool output = (it != adj[u].end()) ? output : 0;
+
+    return output;
 }
 
 vector<int> Graph::neighbors(int u){
@@ -115,7 +109,7 @@ vector<int> Graph::neighbors(int u){
 void Graph::print(){
     double u, v;
     // for (int i = 0; i < n; i++){
-    for (int i = 0; i < n; i++){
+    for (int i = 0; i < 1; i++){
         cout << "Node " << i << "\n";
         for (auto it=adj[i].begin(); it!=adj[i].end(); it++){
             cout << "\t-> ";
@@ -129,28 +123,20 @@ void Graph::print(){
 }
 
 double Graph::get_edge_value(int u, int v) {
-    int w;
-    double y; 
+
+    auto it = find_if( adj[u].begin(), adj[u].end(), 
+        [&v](const pair<int, double>& element){ return (element.first == v);} );
+    double output = (it != adj[u].end()) ? it->second : -1.0;
     
-    for (auto it=adj[u].begin(); it!=adj[u].end(); it++){
-        w = it->first;
-        y = it->second;
-        if (w == v) return y;
-    }
-    return -1.0;
+    return output;
 }
 
 void Graph::set_edge_value(int u, int v, double dist) {
-    int w;
-    double y; 
+
+    auto it = find_if( adj[u].begin(), adj[u].end(), 
+        [&v](const pair<int, double>& element){ return (element.first == v);} );
+    double output = (it != adj[u].end()) ? (it->second = dist) : 0;
     
-    for (auto it=adj[u].begin(); it!=adj[u].end(); it++){
-        w = it->first;
-        if (w == v) {
-            it->second = dist;
-            break;
-        }
-    }
 }
 
 int main(void) {
@@ -160,10 +146,12 @@ int main(void) {
     // for (auto it=neigh.begin(); it!=neigh.end(); it++){
     //         cout << *it << ", ";
     //     }
-    // cout << test.set_edge_value(0, 1, 90) << "\n";
+    // cout << test.get_edge_value(0, 1) << "\n";
     // test.set_edge_value(0, 1, 9.0) ;
+    // cout << test.adjacent(0, 1) << "\n";
+    test.remove(0, 1);
     
-    // test.print();
+    test.print();
 
     
     return 0;
