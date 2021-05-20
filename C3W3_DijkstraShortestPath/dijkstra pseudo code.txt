@@ -1,0 +1,104 @@
+Graph g
+
+start u [S]
+end v [T]
+curr_dist cd = 0
+total_dist td = 0
+closed_set cs
+	
+	n = neighbors(u) [A, B, D]
+	for neighbor in n:
+		y = get_node_value(u) + get_edge_val(u, neighbor) [0+4, 0+3, 0+7]
+		set_node_value(neighbor, y) 
+		pq.insert(make_pair(neighbor, y)) [insert, insert, insert]
+
+	top = pq.top() [B, 3]
+	node = top.first [B]
+	//cs.push(B) [S, B]
+	//dist = top.second [3]
+	//cd += dist [3]
+
+	n = neighbors(node) [D]
+	for neighbor in n:
+		y = get_node_value(node) + get_edge_val(node, neighbor) [3+4]
+		neighbor_node_value = get_node_value(neighbor) [7]
+		if y >= get_node_value(neighbor)
+			set_node_value(neighbor, y)
+			pq.insert(make_pair(neighbor, y))
+
+	top = pq.top() [A, 4]
+	node = top.first [A]
+	if (node == v) end
+	
+	n = neighbors(node) [C]
+	for neighbor in n:
+		y = get_node_value(node) + get_edge_val(node, neighbor) [4+1]
+		neighbor_node_value = get_node_value(neighbor) [0]
+		if y >= get_node_value(neighbor) 
+			set_node_value(neighbor, y)
+			pq.insert(make_pair(neighbor, y))
+	top = pq.top() [C, 5]
+	node = top.first [C]
+	if (node == v) end
+	
+	n = neighbors(node) [D, E]
+	for neighbor in n:
+		y = get_node_value(node) + get_edge_val(node, neighbor) [5+3, 5+1] 
+		neighbor_node_value = get_node_value(neighbor) [7, 0]
+		if y >= get_node_value(neighbor)
+			set_node_value(neighbor, y)
+			pq.insert(make_pair(neighbor, y))
+
+	top = pq.top() [E, 6]
+	node = top.first [E]
+	if (node == v) end
+	
+	n = neighbors(node) [G, T]
+	for neighbor in n:
+		y = get_node_value(node) + get_edge_val(node, neighbor) [6+2, 6+4] 
+		neighbor_node_value = get_node_value(neighbor) [0, 0]
+		if y >= get_node_value(neighbor)
+			set_node_value(neighbor, y)
+			pq.insert(make_pair(neighbor, y))
+
+	top = pq.top() [D, 7]
+	node = top.first [D]
+	if (node == v) end
+	
+	n = neighbors(node) [E, F, T]
+	for neighbor in n:
+		y = get_node_value(node) + get_edge_val(node, neighbor) [7+1, 7+5, 7+3] 
+		neighbor_node_value = get_node_value(neighbor) [8, 0, 10]
+		if y >= get_node_value(neighbor)
+			set_node_value(neighbor, y)
+			pq.insert(make_pair(neighbor, y))
+
+	top = pq.top() [G, 8]
+	node = top.first [G]
+	if (node == v) end
+	
+	n = neighbors(node) [T]
+	for neighbor in n:
+		y = get_node_value(node) + get_edge_val(node, neighbor) [8+3] 
+		neighbor_node_value = get_node_value(neighbor) [10]
+		if y >= get_node_value(neighbor)
+			set_node_value(neighbor, y)
+			pq.insert(make_pair(neighbor, y))
+
+	top = pq.top() [T, 10]
+	node = top.first [T]
+	if (node == v) end
+	
+	n = neighbors(node) [T]
+	for neighbor in n:
+		y = get_node_value(node) + get_edge_val(node, neighbor) [8+3] 
+		neighbor_node_value = get_node_value(neighbor) [10]
+		if y >= get_node_value(neighbor)
+			set_node_value(neighbor, y)
+			pq.insert(make_pair(neighbor, y))
+
+	//set_node_value(node, d)
+
+	
+	
+		

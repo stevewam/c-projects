@@ -42,7 +42,7 @@ void PriorityQueue::minPriority(){
 }
 
 bool PriorityQueue::contains(edge e){
-    auto it = find (contents.begin(), contents.end(), 30);
+    auto it = find(contents.begin(), contents.end(), e.first);
     if (it != contents.end())
         return 1;
     else
