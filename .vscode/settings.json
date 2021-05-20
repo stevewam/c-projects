@@ -13,6 +13,8 @@
         "utility": "cpp",
         "vector": "cpp",
         "memory": "cpp",
-        "iomanip": "cpp"
+        "iomanip": "cpp",
+        "functional": "cpp",
+        "queue": "cpp"
     }
 }
