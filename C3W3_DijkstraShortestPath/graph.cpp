@@ -25,23 +25,26 @@ public:
     vector<int> neighbors(int u);
     void add(int u, int v, double dist);
     void remove(int u, int v);
-    // void get_node_value(int u);
-    // void set_node_value(int u, double a);
+    double get_node_value(int u);
+    void set_node_value(int u, double a);
     double get_edge_value(int u, int v);
     void set_edge_value(int u, int v, double dist);
     void print(int x);
 private:
     int n;
-    vector <edge>* adj;
+    vector <edge>* edges;
+    double* vertices;
 };
 
 Graph::Graph(int n, double density){
     srand(time(0));
     this->n = n;
-    adj = new vector <edge> [n];
+    edges = new vector <edge> [n];
+    vertices = new double [5];
     int count = 0;
 
     for (int i = 0; i < n; i++){
+        vertices[i] = 0.0;
         for (int j = 0; j < n; j++){
             if (i == j) 
                 continue;
@@ -62,14 +65,14 @@ int Graph::V(){
 int Graph::E(){
     int sum = 0;
     for (int i = 0; i < n; i++){
-        sum += adj[i].size();
+        sum += edges[i].size();
     }
     return sum/2;
 }
 
 void Graph::add( int u, int v, double dist){
-    adj[u].push_back(make_pair(v, dist));
-    adj[v].push_back(make_pair(u, dist));
+    edges[u].push_back(make_pair(v, dist));
+    edges[v].push_back(make_pair(u, dist));
 };
 
 void Graph::remove(int u, int v){
@@ -77,22 +80,23 @@ void Graph::remove(int u, int v){
     int nodes[2] = {u, v};
     int flag = 1;
 
-    auto it = find_if( adj[u].begin(), adj[u].end(), 
+    auto it = find_if( edges[u].begin(), edges[u].end(), 
         [&v](const edge& element){ return (element.first == v);} );
 
-    if (it != adj[u].end()) {
-        adj[u].erase(it);
-        auto it = find_if( adj[v].begin(), adj[v].end(), 
+    if (it != edges[u].end()) {
+        edges[u].erase(it);
+        auto it = find_if( edges[v].begin(), edges[v].end(), 
             [&u](const edge& element){ return (element.first == u);} );
-        adj[v].erase(it);
+        edges[v].erase(it);
     }
 }
 
+
 int Graph::adjacent(int u, int v){
 
-    auto it = find_if( adj[u].begin(), adj[u].end(), 
+    auto it = find_if( edges[u].begin(), edges[u].end(), 
         [&v](const edge& element){ return (element.first == v);} );
-    bool output = (it != adj[u].end()) ? output : 0;
+    bool output = (it != edges[u].end()) ? output : 0;
 
     return output;
 }
@@ -101,7 +105,7 @@ vector<int> Graph::neighbors(int u){
     vector<int> neighbors_nodes;
     int w;
 
-    for (auto it=adj[u].begin(); it!=adj[u].end(); it++){
+    for (auto it=edges[u].begin(); it!=edges[u].end(); it++){
         w = it->first;
         neighbors_nodes.push_back(w);
     }
@@ -114,7 +118,7 @@ void Graph::print(int x = RAND_MAX){
 
     for (int i = 0; i < length; i++){
         cout << "Node " << i << "\n";
-        for (auto it=adj[i].begin(); it!=adj[i].end(); it++){
+        for (auto it=edges[i].begin(); it!=edges[i].end(); it++){
             cout << "\t-> ";
             u = it->first;
             v = it->second;
@@ -125,20 +129,28 @@ void Graph::print(int x = RAND_MAX){
     }
 }
 
-double Graph::get_edge_value(int u, int v) {
+double Graph::get_node_value(int u){
+    return vertices[u];
+}
 
-    auto it = find_if( adj[u].begin(), adj[u].end(), 
+void Graph::set_node_value(int u, double a){
+    vertices[u] = a;
+}
+
+double Graph::get_edge_value(int u, int v){
+
+    auto it = find_if( edges[u].begin(), edges[u].end(), 
         [&v](const edge& element){ return (element.first == v);} );
-    double output = (it != adj[u].end()) ? it->second : -1.0;
+    double output = (it != edges[u].end()) ? it->second : -1.0;
     
     return output;
 }
 
 void Graph::set_edge_value(int u, int v, double dist) {
 
-    auto it = find_if( adj[u].begin(), adj[u].end(), 
+    auto it = find_if( edges[u].begin(), edges[u].end(), 
         [&v](const edge& element){ return (element.first == v);} );
-    double output = (it != adj[u].end()) ? (it->second = dist) : 0;
+    double output = (it != edges[u].end()) ? (it->second = dist) : 0;
     
 }
 
