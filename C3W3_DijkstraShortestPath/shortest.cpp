@@ -41,55 +41,61 @@ vector<int> ShortestPath::path(int u, int w) {
 	pq.insert(make_pair(u, 0));
     g.set_node_value(u, 0);
     paths[u].push_back(u);
-    cout << endl << "Finding shortest path from Node " << u << " to " << w << endl << endl;
+    // cout << endl << "Finding shortest path from Node " << u << " to " << w << endl << endl;
+    cout << u << " -> " << w;
 
     while (!pq.empty()) {
         top = pq.top();
         node = top.first;
-        if (node == w) break;
-        
-        cout << "- Evaluating Node " << node << endl;
+        if (node == w) {
+            // cout << "Shortest Path: ";
+            for (auto it=paths[w].begin(); it!=paths[w].end(); it++){
+                // cout << " -> " << *it;
+            }
+            // cout << endl;
+
+            double total_dist = g.get_node_value(w);
+            // cout << "Total Distance: " << total_dist << endl;
+            cout << " : " << total_dist << endl;
+            shortest_paths[u].push_back(make_pair(w, total_dist));
+            return paths[w];
+        }
+        // cout << "- Evaluating Node " << node << endl;
         vector<int> n = g.neighbors(node);
         for(int i = 0; i < n.size(); i++) {
-            cout << "-- Travelling to Node " << n[i] ;
+            // cout << "-- Travelling to Node " << n[i] ;
             double y = g.get_node_value(node) + g.get_edge_value(node, n[i]);
             
-            cout << ": Distance = " << y << " -> ";
+            // cout << ": Distance = " << y << " -> ";
             if (y <= g.get_node_value(n[i])){
                 if (pq.contains(n[i])){
                     pq.chgPriority(n[i], y);
-                    cout << "Node already in Queue, Node value updated to " << y;
+                    // cout << "Node already in Queue, Node value updated to " << y;
                 }
                 else {
                     g.set_node_value(n[i], y);
                     pq.insert(make_pair(n[i], y));
-                    cout << "Node value updated to " << y;
+                    // cout << "Node value updated to " << y;
                 }
                 paths[n[i]].clear();
-                cout << " -> Path ";
+                // cout << " -> Path ";
                 for (auto it=paths[node].begin(); it!=paths[node].end(); it++){
                     paths[n[i]].push_back(*it);
-                    cout << ":" << *it;
+                    // cout << ":" << *it;
                 }
                 paths[n[i]].push_back(n[i]); 
-                cout << ":" << n[i];
+                // cout << ":" << n[i];
             }
-            else
-                cout << "Node value not updated";
-            cout << endl;
+            // else
+            //     cout << "Node value not updated";
+            // cout << endl;
         }
         pq.minPriority();
-        cout << endl;
+        // cout << endl;
     }
-    cout << "Shortest Path: ";
-    for (auto it=paths[w].begin(); it!=paths[w].end(); it++){
-        cout << " -> " << *it;
-    }
-    cout << endl;
-
-    double total_dist = g.get_node_value(w);
-    cout << "Total Distance: " << total_dist << endl;
-    shortest_paths[u].push_back(make_pair(w, total_dist));
+    // cout << "No shortest path available.";
+    shortest_paths[u].push_back(make_pair(w, DBL_MAX));
+    cout << " : -" << endl;
     return paths[w];
 }
 
@@ -104,15 +110,31 @@ double ShortestPath::path_size(int u, int w){
 }
 
 int main(void){
-    Graph test(10, 0.1);
+    int size = 10;
+    double density = 0.1;
+    int start_node = 0;
+    double sum;
+    double avg;
+    double dist;
+    Graph test(size, density);
+
     // double* test.vertices();
-    test.print();
+    // test.print();
     // cout << test.E();
     ShortestPath dijkstra(test);
+    vector<int> vertices = dijkstra.vertices();
 
-    // dijkstra.path(0, 8);
-    cout << dijkstra.path_size(0, 8);
-    cout << "Done";
+    for(int i = 0; i < vertices.size(); i++) {
+        if (vertices[i] == start_node) continue;
+        dist = dijkstra.path_size(start_node, vertices[i]);
+        if (dist != DBL_MAX)
+            sum += dijkstra.path_size(start_node, vertices[i]);
+        else
+            size--;
+    }
+
+    avg = sum/size;
+    cout << "Average shortest path from Node " << start_node << " is " << avg;
     
     return 0;
 }
