@@ -15,6 +15,17 @@
         "memory": "cpp",
         "iomanip": "cpp",
         "functional": "cpp",
-        "queue": "cpp"
+        "queue": "cpp",
+        "cfloat": "cpp",
+        "__bit_reference": "cpp",
+        "__mutex_base": "cpp",
+        "deque": "cpp",
+        "tuple": "cpp",
+        "type_traits": "cpp",
+        "algorithm": "cpp",
+        "ios": "cpp",
+        "list": "cpp",
+        "__node_handle": "cpp",
+        "ostream": "cpp"
     }
 }

@@ -5,6 +5,7 @@
 #include <iomanip>
 #include <exception>
 #include <queue>
+#include "graph.h"
 using namespace std;
 
 typedef pair<double, int> edge;
@@ -21,8 +22,8 @@ struct greater_second {
 
 class PriorityQueue {
 public:
-    PriorityQueue():pq(pq), contents(contents){};
-    void chgPriority(int priority); //changes the priority (node value) of queue element.
+    PriorityQueue():pq(), contents(){};
+    void chgPriority(edge, double priority); //changes the priority (node value) of queue element.
     void minPriority(); 
     bool contains(edge e);
     void insert(edge e);
@@ -34,7 +35,7 @@ private:
 };
 
 // void PriorityQueue::chgPriority(int priority, edge e){
-
+    
 // }
 
 void PriorityQueue::minPriority(){
@@ -42,7 +43,7 @@ void PriorityQueue::minPriority(){
 }
 
 bool PriorityQueue::contains(edge e){
-    auto it = find(contents.begin(), contents.end(), e.first);
+    auto it = find (contents.begin(), contents.end(), e.first);
     if (it != contents.end())
         return 1;
     else
@@ -62,4 +63,14 @@ int PriorityQueue::size(){
     return pq.size();
 }
 
+int main(void){
+    Graph test(50, 0.1);
 
+    PriorityQueue pq;
+    pq.insert(make_pair(0, 100));
+    pq.insert(make_pair(1, 7));
+    auto result = pq.top();
+    cout << result.first;
+    
+    return 0;
+}

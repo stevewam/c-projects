@@ -1,0 +1,134 @@
+Graph g
+
+start u [S]
+end v [T]
+curr_dist cd = 0
+total_dist td = 0
+closed_set cs
+paths vector[V()]
+
+
+	y = get_node_value(u)
+	pq.insert(make_pair(u, y))
+----------------------------------
+	top = pq.top() [S, 0]
+	node = top.first [S]
+	if (node == v) end
+
+	n = neighbors(node) [A, B, D]
+	for neighbor in n:
+		y = get_node_value(node) + get_edge_val(node, neighbor) [0+4, 0+3, 0+7]
+		if y <= get_node_value(neighbor)
+			if neighbor in pq:
+				chgPriority
+			set_node_value(neighbor, y)
+			pq.insert(make_pair(neighbor, y)) [in, in, in]
+			for element in paths[node]
+				paths[neighbor].push_back(element)
+			paths[neighbor].push_back(node)
+	if any in above: cs.append(node) [A:S-A,B:S-B,C:,D:S-D,E:,F:,G:,T:]
+----------------------------------
+	top = pq.top() [B, 3]
+	node = top.first [B]
+	if (node == v) end
+
+	n = neighbors(node) [D]
+	for neighbor in n:
+		y = get_node_value(node) + get_edge_val(node, neighbor) [3+4]
+		neighbor_node_value = get_node_value(neighbor) [7]
+		if y >= get_node_value(neighbor)
+			set_node_value(neighbor, y)
+			pq.insert(make_pair(neighbor, y)) [out]
+			for element in paths[node]
+				paths[neighbor].push_back(element)
+			paths[neighbor].push_back(node)
+	if any in above: cs.append(node) [A:S-A,B:S-B,C:S-C,D:S-D,E:,F:,G:,T:]
+----------------------------------
+	top = pq.top() [A, 4]
+	node = top.first [A]
+	if (node == v) end
+	
+	n = neighbors(node) [C]
+	for neighbor in n:
+		y = get_node_value(node) + get_edge_val(node, neighbor) [4+1]
+		neighbor_node_value = get_node_value(neighbor) [0]
+		if y >= get_node_value(neighbor) 
+			set_node_value(neighbor, y)
+			pq.insert(make_pair(neighbor, y)) [in]
+			for element in paths[node]
+				paths[neighbor].push_back(element)
+			paths[neighbor].push_back(node)
+	if any in above: cs.append(node) [A:S-A,B:S-B,C:S-A-C,D:S-D,E:,F:,G:,T:]
+----------------------------------
+	top = pq.top() [C, 5]
+	node = top.first [C]
+	if (node == v) end
+	
+	n = neighbors(node) [D, E]
+	for neighbor in n:
+		y = get_node_value(node) + get_edge_val(node, neighbor) [5+3, 5+1] 
+		neighbor_node_value = get_node_value(neighbor) [7, 0]
+		if y >= get_node_value(neighbor)
+			set_node_value(neighbor, y)
+			pq.insert(make_pair(neighbor, y)) [out, in]
+			for element in paths[node]
+				paths[neighbor].push_back(element)
+			paths[neighbor].push_back(node)
+	if any in above: cs.append(node) [A:S-A,B:S-B,C:S-A-C,D:S-D,E:S-A-C-E,F:,G:,T:]
+----------------------------------
+	top = pq.top() [E, 6]
+	node = top.first [E]
+	if (node == v) end
+	
+	n = neighbors(node) [G, T]
+	for neighbor in n:
+		y = get_node_value(node) + get_edge_val(node, neighbor) [6+2, 6+4] 
+		neighbor_node_value = get_node_value(neighbor) [0, 0]
+		if y >= get_node_value(neighbor)
+			set_node_value(neighbor, y)
+			pq.insert(make_pair(neighbor, y)) [in, in]
+			for element in paths[node]
+				paths[neighbor].push_back(element)
+			paths[neighbor].push_back(node)
+	if any in above: cs.append(node) [A:S-A,B:S-B,C:S-A-C,D:S-D,E:S-A-C-E,F:,G:S-A-C-E-G,T:S-A-C-E-T]
+----------------------------------
+	top = pq.top() [D, 7]
+	node = top.first [D]
+	if (node == v) end
+	
+	n = neighbors(node) [E, F, T]
+	for neighbor in n:
+		y = get_node_value(node) + get_edge_val(node, neighbor) [7+1, 7+5, 7+3] 
+		neighbor_node_value = get_node_value(neighbor) [8, 0, 10]
+		if y >= get_node_value(neighbor)
+			set_node_value(neighbor, y)
+			pq.insert(make_pair(neighbor, y)) [out, in, out]
+			for element in paths[node]
+				paths[neighbor].push_back(element)
+			paths[neighbor].push_back(node)
+	if any in above: cs.append(node) [A:S-A,B:S-B,C:S-A-C,D:S-D,E:S-A-C-E,F:S-D-F,G:S-A-C-E-G,T:S-A-C-E-T]
+----------------------------------
+	top = pq.top() [G, 8]
+	node = top.first [G]
+	if (node == v) end
+	
+	n = neighbors(node) [T]
+	for neighbor in n:
+		y = get_node_value(node) + get_edge_val(node, neighbor) [8+3] 
+		neighbor_node_value = get_node_value(neighbor) [10]
+		if y >= get_node_value(neighbor)
+			set_node_value(neighbor, y)
+			pq.insert(make_pair(neighbor, y)) [out]
+			for element in paths[node]
+				paths[neighbor].push_back(element)
+			paths[neighbor].push_back(node)
+	if any in above: cs.append(node) [A:S-A,B:S-B,C:S-A-C,D:S-D,E:S-A-C-E,F:S-D-F,G:S-A-C-E-G,T:S-A-C-E-T]
+----------------------------------
+	top = pq.top() [T, 10]
+	node = top.first [T]
+	if (node == v) end
+
+
+	
+	
+		

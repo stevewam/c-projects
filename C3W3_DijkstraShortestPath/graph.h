@@ -1,5 +1,6 @@
 #include <iostream>
 #include <cstdlib>
+#include <cfloat>
 #include <ctime>
 #include <vector>
 #include <iomanip>
@@ -10,7 +11,7 @@ const double MIN_DIST = 10.0;
 const double MAX_DIST = 100.0;
 const double RANGE = MAX_DIST - MIN_DIST;
 
-typedef pair<double, int> edge;
+typedef pair<int, double> edge;
 
 double prob() {
     return double(rand())/RAND_MAX;
@@ -18,6 +19,7 @@ double prob() {
 
 class Graph {
 public:
+    Graph():n(0), edges(), vertices(){};
     Graph(int n, double density);
     int V();
     int E();
@@ -25,33 +27,41 @@ public:
     vector<int> neighbors(int u);
     void add(int u, int v, double dist);
     void remove(int u, int v);
+    // double* get_vertices();
     double get_node_value(int u);
     void set_node_value(int u, double a);
     double get_edge_value(int u, int v);
     void set_edge_value(int u, int v, double dist);
     void print(int x);
+    // ~Graph();
 private:
     int n;
     vector <edge>* edges;
     double* vertices;
 };
 
+// Graph::~Graph(){
+//     delete edges;
+//     delete vertices;
+// }
+
 Graph::Graph(int n, double density){
-    srand(time(0));
+    // srand(time(0));
+    srand(1);
     this->n = n;
     edges = new vector <edge> [n];
-    vertices = new double [5];
+    vertices = new double [n];
     int count = 0;
 
     for (int i = 0; i < n; i++){
-        vertices[i] = 0.0;
+        vertices[i] = DBL_MAX;
         for (int j = 0; j < n; j++){
             if (i == j) 
                 continue;
             else
-                if (prob() < density && !Graph::adjacent(i, j) && !Graph::adjacent(j, i)) {
+                if (prob() < density && !adjacent(i, j) && !adjacent(j, i)) {
                     double dist = (MIN_DIST + (rand() % int(RANGE)))/10.0;
-                    Graph::add(i, j, dist);
+                    add(i, j, dist);
                     count++;
                 }           
         }
@@ -96,7 +106,7 @@ int Graph::adjacent(int u, int v){
 
     auto it = find_if( edges[u].begin(), edges[u].end(), 
         [&v](const edge& element){ return (element.first == v);} );
-    bool output = (it != edges[u].end()) ? output : 0;
+    bool output = (it != edges[u].end()) ? 1 : 0;
 
     return output;
 }
@@ -129,6 +139,10 @@ void Graph::print(int x = RAND_MAX){
     }
 }
 
+// double* Graph::get_vertices(){
+//     return vertices;
+// }
+
 double Graph::get_node_value(int u){
     return vertices[u];
 }
@@ -154,6 +168,11 @@ void Graph::set_edge_value(int u, int v, double dist) {
     
 }
 
+// int main(void){
+//     Graph test(50, 0.1);
+//     test.print();
+//     return 0;
+// }
 
 
 
