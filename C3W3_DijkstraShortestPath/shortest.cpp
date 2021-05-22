@@ -123,6 +123,7 @@ int main(void){
     // cout << test.E();
     ShortestPath dijkstra(test);
     vector<int> vertices = dijkstra.vertices();
+    cout << "Finding average shortest path from Node " << start_node << endl;
 
     for(int i = 0; i < vertices.size(); i++) {
         if (vertices[i] == start_node) continue;
