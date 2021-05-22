@@ -46,8 +46,8 @@ private:
 // }
 
 Graph::Graph(int n, double density){
-    // srand(time(0));
-    srand(1);
+    srand(time(0));
+    // srand(1);
     this->n = n;
     edges = new vector <edge> [n];
     vertices = new double [n];

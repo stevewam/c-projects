@@ -110,8 +110,8 @@ double ShortestPath::path_size(int u, int w){
 }
 
 int main(void){
-    int size = 10;
-    double density = 0.1;
+    int size = 50;
+    double density = 0.2;
     int start_node = 0;
     double sum;
     double avg;
