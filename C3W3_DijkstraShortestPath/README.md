@@ -43,3 +43,59 @@ The priority queue class stores nodes and their corresponding value. It is based
 
 
 <i>**Error Message Clarity**</i>. One of biggest challenge in coding in C++ for me is figuring out how to fix an error. This is especially true when the error pertains to memory related error which usually manifested in segmentation error. Segmentation error does not provide any traceback and therefore I have to review the code line by line to fix this error. It is possible that there is a better approach to solving segmentation error, however, I was not able to find a better approach to solve this.
+<br><br><br>
+
+<h2> 4. Program Printout </h2>
+<br>
+
+    Finding average shortest path from Node 0
+    0 -> 1 : 4.7
+    0 -> 2 : 3.2
+    0 -> 3 : 5.2
+    0 -> 4 : 5.4
+    0 -> 5 : 7.1
+    0 -> 6 : 3.1
+    0 -> 7 : 3
+    0 -> 8 : 6.8
+    0 -> 9 : 12.9
+    0 -> 10 : 10.9
+    0 -> 11 : 5.7
+    0 -> 12 : 4.5
+    0 -> 13 : 11.9
+    0 -> 14 : 3.6
+    0 -> 15 : 15.4
+    0 -> 16 : 11.6
+    0 -> 17 : 5.9
+    0 -> 18 : 7.6
+    0 -> 19 : 9.5
+    0 -> 20 : 11.4
+    0 -> 21 : 17.4
+    0 -> 22 : 7.5
+    0 -> 23 : 5.5
+    0 -> 24 : 8.2
+    0 -> 25 : 8
+    0 -> 26 : 1
+    0 -> 27 : 10.9
+    0 -> 28 : 6.2
+    0 -> 29 : 7.8
+    0 -> 30 : 5.7
+    0 -> 31 : 5.7
+    0 -> 32 : 6.8
+    0 -> 33 : 5.7
+    0 -> 34 : 5.4
+    0 -> 35 : 2.8
+    0 -> 36 : 2.6
+    0 -> 37 : 9.1
+    0 -> 38 : 4.8
+    0 -> 39 : 10.6
+    0 -> 40 : 4.9
+    0 -> 41 : 6.4
+    0 -> 42 : 8.5
+    0 -> 43 : 5.1
+    0 -> 44 : 2.2
+    0 -> 45 : 2
+    0 -> 46 : 8.8
+    0 -> 47 : 1.5
+    0 -> 48 : 5.7
+    0 -> 49 : 3.7
+    Average shortest path from Node 0 is 6.598    
