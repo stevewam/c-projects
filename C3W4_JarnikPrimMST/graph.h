@@ -6,6 +6,9 @@
 #include <iomanip>
 #include <exception>
 #include <algorithm>
+#include <iterator>
+#include <fstream>
+#include <string>
 using namespace std;
 
 const double MIN_DIST = 10.0;
@@ -15,40 +18,33 @@ const double RANGE = MAX_DIST - MIN_DIST;
 typedef pair<int, double> edge;
 
 double prob() {
-    return double(rand())/RAND_MAX;
+	return (static_cast<double>(rand())/RAND_MAX);
 }
 
 class Graph {
 public:
     Graph():n(0), edges(), vertices(){};
     Graph(int n, double density);
+    Graph(string s);
     int V();
     int E();
     int adjacent(int u, int v);
     vector<int> neighbors(int u);
     void add(int u, int v, double dist);
     void remove(int u, int v);
-    // double* get_vertices();
     double get_node_value(int u);
     void set_node_value(int u, double a);
     double get_edge_value(int u, int v);
     void set_edge_value(int u, int v, double dist);
     void print(int x);
-    // ~Graph();
 private:
     int n;
     vector <edge>* edges;
     double* vertices;
 };
 
-// Graph::~Graph(){
-//     delete edges;
-//     delete vertices;
-// }
-
 Graph::Graph(int n, double density){
     srand(time(0));
-    // srand(1);
     this->n = n;
     edges = new vector <edge> [n];
     vertices = new double [n];
@@ -61,13 +57,37 @@ Graph::Graph(int n, double density){
                 continue;
             else
                 if (prob() < density && !adjacent(i, j) && !adjacent(j, i)) {
-                    double dist = (MIN_DIST + (rand() % int(RANGE)))/10.0;
+                    double dist = (MIN_DIST + (rand() % static_cast<int>(RANGE)))/10.0;
                     add(i, j, dist);
                     count++;
                 }           
         }
     }
 };
+
+
+Graph::Graph(string s) {
+    ifstream file(s);
+    istream_iterator<int> start(file), end;
+
+    n = *start;
+    // cout << *start;
+    edges = new vector<edge> [n];
+    vertices = new double [n];
+    int temp[2];
+    
+    int i = 0;
+    for (auto it=++start; it!=end; ++it) {
+        if (i % 3 == 0) 
+            temp[0] = *it;
+        else if (i % 3 == 1) 
+            temp[1] = *it;
+        else
+            edges[temp[0]].push_back(make_pair(temp[1], *it));
+        i++;
+    }
+
+}
 
 int Graph::V(){
     return n;
@@ -140,10 +160,6 @@ void Graph::print(int x = RAND_MAX){
     }
 }
 
-// double* Graph::get_vertices(){
-//     return vertices;
-// }
-
 double Graph::get_node_value(int u){
     return vertices[u];
 }
@@ -174,6 +190,7 @@ void Graph::set_edge_value(int u, int v, double dist) {
 //     test.print();
 //     return 0;
 // }
+// ifstream data_file()
 
 
 
