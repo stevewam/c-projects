@@ -24,9 +24,9 @@ public:
 private:
     int size;
     matrix init_board();
-    vector<int> init_pieces();
+    matrix init_pieces();
     matrix board;
-    vector<int> pieces;
+    matrix pieces;
     
 };
 
@@ -50,10 +50,9 @@ matrix HexBoard::init_board(){
     return new_board;
 }
 
-vector<int> HexBoard::init_pieces(){
-    int nodes = size*size;
-    vector<int> new_board(nodes, 0);
-    return new_board;
+matrix HexBoard::init_pieces(){
+    matrix new_pieces(size, vector<int>(size, 0));
+    return new_pieces;
 }
 
 void HexBoard::print_matrix(){
@@ -97,7 +96,7 @@ void HexBoard::print(){
 }
 
 int main(){
-    HexBoard test_board(3);
+    HexBoard test_board(5);
     test_board.print();
     test_board.print_matrix();
     return 0;
