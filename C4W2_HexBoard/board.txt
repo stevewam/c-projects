@@ -42,16 +42,13 @@ HexBoard::HexBoard(int n){
 
 matrix HexBoard::init_hexagons(){
     int nodes = size*size;
-    // int row, col;
     matrix hex_slots(nodes, vector<int>(nodes, 0));
     for(int i = 0; i < nodes; ++i){
-        // row = nodes/size;
-        // col = nodes%size;
         if (i-size >= 0) hex_slots[i][i-size] = 1;
         if (i-size+1 >= 0 && (i-size+1)%size != 0) hex_slots[i][i-size+1] = 1;
-        if ((i)%size != 0 && i-1 >= 0) hex_slots[i][i-1] = 1;
-        if ((i)%size != size-1 && i+1 < nodes) hex_slots[i][i+1] = 1;
-        if ((i)%size != 0 && i+size-1 < nodes) hex_slots[i][i+size-1] = 1;
+        if ((i-1)%size != 2 && i-1 >= 0) hex_slots[i][i-1] = 1;
+        if ((i+1)%size != 0 && i+1 < nodes) hex_slots[i][i+1] = 1;
+        if ((i+size-1)%size != 2 && i+size-1 < nodes) hex_slots[i][i+size-1] = 1;
         if (i+size < nodes && i+size < nodes) hex_slots[i][i+size] = 1;
     }
     return hex_slots;
@@ -87,7 +84,7 @@ void HexBoard::print(){
         for (int j = 0; j < size; ++j){
             if (board[i][j] == 0) stone = ".";
             else if (board[i][j] == 1) stone = "x";
-            else if (board[i][j] == 2) stone = "o";
+            else stone = "o";
             (j != size-1) ? (top += stone + " — ") : (top += stone);
             (i != size-1) ? ((j != size-1) ? (bottom += " \\ /") 
                 : (bottom += " \\   ")) : (bottom);
@@ -230,8 +227,6 @@ int main(){
 
     cout << "Board" << endl << endl;
     board.print();
-
-    // board.print_matrix();
 
     cout << "Instruction: " << endl;
     cout << "Player 1, your token is X. To win, you must connect the two vertical sides of the board." << endl;
