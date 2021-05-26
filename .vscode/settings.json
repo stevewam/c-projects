@@ -54,6 +54,7 @@
         "stdexcept": "cpp",
         "streambuf": "cpp",
         "typeinfo": "cpp",
-        "stack": "cpp"
+        "stack": "cpp",
+        "random": "cpp"
     }
 }

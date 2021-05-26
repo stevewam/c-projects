@@ -10,6 +10,7 @@
 #include <fstream>
 #include <string>
 #include <numeric>
+#include <random>
 using namespace std;
 
 typedef vector<vector<int>> matrix;
@@ -20,13 +21,16 @@ class HexBoard {
 public:
     HexBoard(): size(11), hexagons(init_hexagons()), board(init_board()), moves(0){}
     HexBoard(int n);
+    HexBoard(const HexBoard& t) {
+        board = t.board; size = t.size; moves = t.moves; hexagons = t.hexagons;
+    };
     bool move(player p, int i, int j);
-    bool end();
+    int end();
     void print();
     void print_matrix();
     void evaluate_move();
-    matrix fill_board(matrix temp_board);
-    void optimal_move(int n);
+    void fill_board(default_random_engine& engine);
+    piece naive_move(player p, int n);
 
 private:
     int size;
@@ -72,31 +76,76 @@ matrix HexBoard::init_board(){
     return new_board;
 }
 
-matrix HexBoard::fill_board(matrix temp_board){
-    srand(time(0));
+void HexBoard::fill_board(default_random_engine& engine){
 
     vector<int> temp = generate_moves();
+    
     int moves_left = temp.size() - 1;
-    random_shuffle(temp.begin(), temp.end());
+    shuffle(temp.begin(), temp.end(), engine);  
+    // for (auto num: temp){
+    //     cout << num << ", ";
+    // }
+    // cout << endl;
 
     for (int i = 0; i < size; ++i){
         for (int j = 0; j < size; ++j){
-            if (!temp_board[i][j]) temp_board[i][j] = temp[moves_left--];
+            if (!board[i][j]) board[i][j] = temp[moves_left--];
         }
     }
-    return temp_board;
 }
 
-void HexBoard::optimal_move(int n){
-    matrix temp_board;
+piece HexBoard::naive_move(player p, int n){
+    HexBoard temp_board;
+    int winner;
+    int max = 0;
+    int reference = static_cast<int>(p);
+    int temp_n;
+    int moves_left = size*size - moves;
+    int exhausted_moves = 0;
+    double progress = 0.1;
+    piece best_move;
+    default_random_engine engine(random_device{}());
+    // engine.seed(time(0));
+    matrix score_board = init_board();
+    // vector<double> possible_moves(size*size);
+    // cout << "Evaluating move [";
     
-    while (n > 0){
-        temp_board = fill_board(board);
-        //check who won;
-        
-        n--;
+    for (int i = 0; i < size; ++i){
+        for (int j = 0; j < size; ++j){
+            if (board[i][j] > 0) 
+                continue;
+            else {
+                // cout << "Try placing stone at " << i+1 << ", " << j+1 << endl << endl;
+                temp_n = n;
+                while (temp_n > 0){
+                    temp_board = *this;
+                    temp_board.move(p, i, j);
+                    // temp_board.print();
+                    temp_board.fill_board(engine);
+                    // temp_board.print();
+                    winner = temp_board.end();
+                    score_board[i][j] += (winner == reference);
+                    // if (winner == reference)
+                    //     cout << "Winner is Player " << reference << endl << endl;
+                    temp_n--;
+                }
+            }
+            // exhausted_moves++;
+            // if (moves_left/exhausted_moves)
+            //     cout << "-";
+        }
     }
-    
+    for (int i = 0; i < size; ++i){
+        for (int j = 0; j < size; ++j){
+            if (score_board[i][j] > max) {
+                max = score_board[i][j];
+                best_move = make_pair(i, j);
+            }
+        }
+    }
+    // cout << "Best move is " << best_move.first << ", " << best_move.second << endl;
+    // cout << "]" << endl;
+    return best_move;
 }
 
 vector<int> HexBoard::generate_moves(){
@@ -211,7 +260,7 @@ bool HexBoard::reach(player p, piece p1){
     return 0;   
 }
 
-bool HexBoard::end(){
+int HexBoard::end(){
     int sum;
     vector<piece> h[2], v[2];
 
@@ -233,86 +282,177 @@ bool HexBoard::end(){
         for (auto slot: v[0]){
             // cout << "(" << slot.first << ", " << slot.second << ") ";
             if (reach(player::O, slot)) {
-                cout << "The game has ended. Player 2 has won. Congratulations!";
-                return true;
+                // cout << "The game has ended. Player 2 has won. Congratulations!";
+                return 2;
             }
         }
     }
-    else if (h[0].size() > 0 && h[1].size() > 0) {
+
+    if (h[0].size() > 0 && h[1].size() > 0) {
         for (auto slot: h[0]){
             // cout << "(" << slot.first << ", " << slot.second << ") ";
             if (reach(player::X, slot)) {
-                cout << "The game has ended. Player 1 has won. Congratulations!";
-                return true;
+                // cout << "The game has ended. Player 1 has won. Congratulations!";
+                return 1;
             }
         }
     }
-    else {
-        // cout << endl;
-        for (auto row: board)
-            sum += accumulate(row.begin(), row.end(), 0);
-        
-        if (sum == size*size) {
-            cout << "No moves left. It is a draw.";
-            return true;
+
+    
+    // cout << endl;
+    for (int i = 0; i < size; ++i){
+        for (int j = 0; j < size; ++j){
+            sum += (board[i][j] > 0);
         }
     }
-    return false;
+    if (sum == size*size) {
+        // cout << "No moves left. It is a draw.";
+        return 3;
+    }
+    else
+        return 0;
 }
 
 int main(){
     int size, i, j;
     int end = 0;
     int legal = 0;
+    int ai_on = 0;
+    int p, difficulty, iter;
+    piece best_move;
     cout << endl << "HEX" << endl << endl;
     cout << "Choose your board size: ";
-    // cin >> size;
-    size = 3;
-    cout << endl;
-    // cout << size << endl << endl;
+    cin >> size;
+    // size = 3;
+    cout << size << endl << endl;
 
     HexBoard board(size);
 
     cout << "Board" << endl << endl;
     board.print();
 
-    board.move(player::X, 1, 2);
-    board.move(player::O, 2, 1);
-    board.print();
-    board.fill_board();
-    board.print();
+    // board.move(player::X, 1, 2);
+    // board.move(player::O, 2, 1);
+    // board.print();
+    // // board.fill_board();
+    // board.print();
+    // best_move = board.naive_move(player::X, 1000);
+    // board.move(player::X, best_move.first, best_move.second);
+    // board.print();
 
     // // board.print_matrix();
 
-    // cout << "Instruction: " << endl;
-    // cout << "Player 1, your token is X. To win, you must connect the two vertical sides of the board." << endl;
-    // cout << "Player 2, your token is O. To win, you must connect the two horizontal sides of the board." << endl;
-    // cout << "To place a token, enter the desired coordinate x y." << endl << endl;
+    cout << "Instruction: " << endl;
+    cout << "Player 1, your token is X. To win, you must connect the two vertical sides of the board." << endl;
+    cout << "Player 2, your token is O. To win, you must connect the two horizontal sides of the board." << endl;
+    cout << "To place a token, enter the desired coordinate x y." << endl << endl;
 
-    // while (!end) {
-    //     while (!legal) {
-    //         cout << "Player 1's Move [row column]: ";
-    //         cin >> i >> j;
-    //         legal = board.move(player::X, i-1, j-1);
-    //     }
-    //     legal = 0;
-    //     cout << endl;
-    //     board.print();
-    //     end = board.end();
-    //     // cout << end;
-    //     if (end) break;
+    cout << "Playing against a computer (1 - yes / 0 - no)? ";
+    cin >> ai_on;
+    cout << endl;
 
-    //     while (!legal) {
-    //         cout << "Player 2's Move [row column]: ";
-    //         cin >> i >> j;
-    //         legal = board.move(player::O, i-1, j-1);
-    //     }
-    //     legal = 0;
-    //     cout << endl;
-    //     board.print();
-    //     end = board.end();
-    // }
-    // cout << endl << endl;
+    if (ai_on) {
+        cout << "Choose difficulty (0 - easy, 1 - medium, 2 - hard): ";
+        cin >> difficulty;
+        cout << endl;
+        switch(difficulty) {
+            case 1: iter = 100;
+            case 2: iter = 1000;
+            case 3: iter = 10000;
+        }
+
+        cout << "Choose your player (1/2): ";
+        cin >> p;
+        cout << endl;
+
+        while (!end) {
+            while (!legal) {
+                if (p == 1) {
+                    cout << "Player 1's Move [row column]: ";
+                    cin >> i >> j;
+                    legal = board.move(player::X, i-1, j-1);
+                }
+                else {
+                    cout << "Player 1's Move [row column]: " << endl;
+                    best_move = board.naive_move(player::X, iter);
+                    legal = board.move(player::X, best_move.first, best_move.second);
+                    cout << best_move.first+1 << " " << best_move.second+1;
+                }
+                
+            }
+            legal = 0;
+            cout << endl;
+            board.print();
+            end = board.end();
+            // cout << end << endl;
+            if (end) {
+                if (end == 3) cout << "No moves left. It is a draw.";
+                cout << "The game has ended. Player 1 has won. Congratulations!";
+                break;
+            }
+
+            while (!legal) {
+                if (p == 2) {
+                    cout << "Player 2's Move [row column]: ";
+                    cin >> i >> j;
+                    legal = board.move(player::O, i-1, j-1);
+                }
+                else {
+                    cout << "Player 2's Move [row column]: " << endl;
+                    best_move = board.naive_move(player::O, iter);
+                    legal = board.move(player::O, best_move.first, best_move.second);
+                    cout << best_move.first+1 << " " << best_move.second+1;
+                }
+            }
+            legal = 0;
+            cout << endl;
+            board.print();
+            end = board.end();
+            // cout << end << endl;
+            if (end) {
+                if (end == 3) cout << "No moves left. It is a draw.";
+                cout << "The game has ended. Player 2 has won. Congratulations!";
+                break;
+            }
+        }
+        cout << endl << endl;
+    }
+    else {
+        while (!end) {
+            while (!legal) {
+                cout << "Player 1's Move [row column]: ";
+                cin >> i >> j;
+                legal = board.move(player::X, i-1, j-1);
+            }
+            legal = 0;
+            cout << endl;
+            board.print();
+            end = board.end();
+            // cout << end << endl;
+            if (end) {
+                if (end == 3) cout << "No moves left. It is a draw.";
+                cout << "The game has ended. Player 1 has won. Congratulations!";
+                break;
+            }
+
+            while (!legal) {
+                cout << "Player 2's Move [row column]: ";
+                cin >> i >> j;
+                legal = board.move(player::O, i-1, j-1);
+            }
+            legal = 0;
+            cout << endl;
+            board.print();
+            end = board.end();
+            // cout << end << endl;
+            if (end) {
+                if (end == 3) cout << "No moves left. It is a draw.";
+                cout << "The game has ended. Player 2 has won. Congratulations!";
+                break;
+            }
+        }
+        cout << endl << endl;
+    }
 
     return 0;
 }
