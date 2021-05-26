@@ -315,9 +315,7 @@ int HexBoard::end(){
 
 int main(){
     int size, i, j;
-    int end = 0;
-    int legal = 0;
-    int ai_on = 0;
+    int legal, ai_on, end = 0;
     int p, difficulty, iter;
     piece best_move;
     cout << endl << "HEX" << endl << endl;
@@ -330,17 +328,6 @@ int main(){
 
     cout << "Board" << endl << endl;
     board.print();
-
-    // board.move(player::X, 1, 2);
-    // board.move(player::O, 2, 1);
-    // board.print();
-    // // board.fill_board();
-    // board.print();
-    // best_move = board.naive_move(player::X, 1000);
-    // board.move(player::X, best_move.first, best_move.second);
-    // board.print();
-
-    // // board.print_matrix();
 
     cout << "Instruction: " << endl;
     cout << "Player 1, your token is X. To win, you must connect the two vertical sides of the board." << endl;
@@ -373,10 +360,10 @@ int main(){
                     legal = board.move(player::X, i-1, j-1);
                 }
                 else {
-                    cout << "Player 1's Move [row column]: " << endl;
+                    cout << "Player 1's Move [row column]: ";
                     best_move = board.naive_move(player::X, iter);
                     legal = board.move(player::X, best_move.first, best_move.second);
-                    cout << best_move.first+1 << " " << best_move.second+1;
+                    cout << best_move.first+1 << " " << best_move.second+1 << endl;
                 }
                 
             }
@@ -398,10 +385,10 @@ int main(){
                     legal = board.move(player::O, i-1, j-1);
                 }
                 else {
-                    cout << "Player 2's Move [row column]: " << endl;
+                    cout << "Player 2's Move [row column]: ";
                     best_move = board.naive_move(player::O, iter);
                     legal = board.move(player::O, best_move.first, best_move.second);
-                    cout << best_move.first+1 << " " << best_move.second+1;
+                    cout << best_move.first+1 << " " << best_move.second+1 << endl;
                 }
             }
             legal = 0;
